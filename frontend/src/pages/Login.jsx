@@ -4,12 +4,14 @@ import {useNavigate} from 'react-router-dom';
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { authDataContext } from '../Context/AuthContext';
 import axios from 'axios'
+import { userDataContext } from '../Context/UserContext';
 
 function Login() {
   let [show, setShow] = useState(false)
   let navigate = useNavigate()
 
   let {serverUrl} = useContext(authDataContext)
+  let {userData, setUserData} = useContext(userDataContext)
       let [name,setName] = useState("")
       let [email,setEmail] = useState("")
       let [password,setPassword] = useState("")
@@ -20,7 +22,10 @@ function Login() {
             let result = await axios.post(serverUrl + "/api/auth/login", {
                 email,
                 password
+
             },{withCredentials:true})
+            setUserData(result.data)
+            navigate("/")
             console.log(result)
         } catch (error) {
             console.log(error)

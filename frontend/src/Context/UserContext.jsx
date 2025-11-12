@@ -1,4 +1,4 @@
-import React, { useContext, useState, createContext, useEffect } from 'react'
+import React, { useContext, useState,  useEffect, createContext } from 'react'
 import { authDataContext } from './AuthContext'
 import axios from 'axios'
 
@@ -11,7 +11,7 @@ function UserContext({children}) {
 
     const getCurrentUser = async () => {
         try {
-            let result = await axios.get(serverUrl + "/api/user/currentuser", {withCredentials: true})
+            let result = await  axios.get(serverUrl + "/api/user/currentuser", {withCredentials: true})
             setUserData(result.data)
         } catch (error) {
             setUserData(null)
