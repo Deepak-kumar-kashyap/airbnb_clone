@@ -1,15 +1,18 @@
 import axios from 'axios'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useContext } from 'react'
 import { useState } from 'react'
 import { createContext } from 'react'
 import { authDataContext } from './AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 export const listingDataContext = createContext()
 
 
 
-function ListingContext({children}) {
+function ListingContext({ children }) {
+
+    let navigate = useNavigate()
 
     let [title, setTitle] = useState("")
     let [description, setDescription] = useState("")
@@ -21,38 +24,91 @@ function ListingContext({children}) {
     let [backEndImage3, setBackEndImage3] = useState(null)
     let [rent, setRent] = useState("")
     let [city, setCity] = useState("")
-    let [landmark, setLandmark] = useState("")
+    let [landMark, setLandMark] = useState("")
     let [category, setCategory] = useState("")
+    let [adding, setAdding] = useState(false)
+    let [updating, setUpdating] = useState(false)
+    let [deleting, setDeleting] = useState(false)
+    let [listingData, setListingData] = useState([])
+    let [newListData, setNewListData] = useState([])
+    let [cardDetails, setCardDetails] = useState(null)
 
-    let {serverUrl} = useContext(authDataContext)
 
-    
+    let { serverUrl } = useContext(authDataContext)
 
-        const handleAddListing = async () => {
-            try {
-                
-                let formData = new FormData()
-        formData.append("title", title)
-        formData.append("image1", backEndImage1 )
-        formData.append("image2", backEndImage2)
-        formData.append("image3", backEndImage3)
-        formData.append("description", description)
-        formData.append("rent", rent)
-        formData.append("city", city)
-        formData.append("landmark", landmark)
-        formData.append("category", category)
 
-        let result =  await axios.post(serverUrl + "/api/listing/add", formData, {withCredentials: true})
 
-        console.log(result)
+    const handleAddListing = async () => {
+        setAdding(true)
+        try {
 
-            } catch (error) {
-                console.log(error)
-            }
+
+            let formData = new FormData()
+            formData.append("title", title)
+            formData.append("image1", backEndImage1)
+            formData.append("image2", backEndImage2)
+            formData.append("image3", backEndImage3)
+            formData.append("description", description)
+            formData.append("rent", rent)
+            formData.append("city", city)
+            formData.append("landMark", landMark)
+            formData.append("category", category)
+
+            let result = await axios.post(serverUrl + "/api/listing/add", formData, { withCredentials: true })
+
+            setAdding(false)
+            console.log(result)
+            navigate("/")
+            setTitle("")
+            setDescription("")
+            setFrontEndImage1(null)
+            setFrontEndImage2(null)
+            setFrontEndImage3(null)
+            setBackEndImage1(null)
+            setBackEndImage2(null)
+            setBackEndImage3(null)
+            setRent("")
+            setCity("")
+            setLandMark("")
+            setCategory("")
+
+
+        } catch (error) {
+            setAdding(false)
+            console.log(error)
+            // console.log("Server error:", error.response?.data ?? error.toString())
         }
+    }
+
+    const handleViewCard = async (id) => {
+        try {
+            let result = await axios.get(serverUrl + `/api/listing/findListingByid/${id}`, { withCredentials: true })
+
+            console.log(result.data)
+            setCardDetails(result.data)
+            navigate("/viewcard")
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getListing = async () => {
+        try {
+            let result = await axios.get(serverUrl + "/api/listing/get", { withCredentials: true })
+            setListingData(result.data)
+            setNewListData(result.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
 
-    let value={
+    useEffect(() => {
+        getListing()
+    }, [adding, updating, deleting])
+
+
+    let value = {
         title, setTitle,
         description, setDescription,
         frontEndImage1, setFrontEndImage1,
@@ -63,20 +119,28 @@ function ListingContext({children}) {
         backEndImage3, setBackEndImage3,
         rent, setRent,
         city, setCity,
-        landmark, setLandmark,
+        landMark, setLandMark,
         category, setCategory,
-        handleAddListing
+        handleAddListing,
+        setAdding, adding,
+        listingData, setListingData,
+        getListing,
+        newListData, setNewListData,
+        handleViewCard,
+        cardDetails, setCardDetails,
+        updating, setUpdating,
+        deleting, setDeleting
 
     }
 
 
-  return (
-    <div>
-        <listingDataContext.Provider value={value}>
-            {children}
-        </listingDataContext.Provider>
-    </div>
-  )
+    return (
+        <div>
+            <listingDataContext.Provider value={value}>
+                {children}
+            </listingDataContext.Provider>
+        </div>
+    )
 }
 
 export default ListingContext

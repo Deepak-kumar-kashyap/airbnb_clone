@@ -15,6 +15,10 @@ const listingSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
+    guest:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
     image1:{
         type: String,
         required: true
@@ -42,6 +46,13 @@ const listingSchema = new mongoose.Schema({
     category:{
         type: String,
         required: true
+    },
+    ratings:{
+        type: Number,
+        min: 0,
+        max: 5,
+        default: 0
+
     },
     isBooked:{
         type: Boolean,

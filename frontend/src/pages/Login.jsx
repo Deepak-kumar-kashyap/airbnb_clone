@@ -15,8 +15,10 @@ function Login() {
       let [name,setName] = useState("")
       let [email,setEmail] = useState("")
       let [password,setPassword] = useState("")
+      let {loading, setLoading} = useContext(authDataContext)
 
   const handleLogin = async (e) => {
+    setLoading(true)
         try {
             e.preventDefault(e)
             let result = await axios.post(serverUrl + "/api/auth/login", {
@@ -24,10 +26,12 @@ function Login() {
                 password
 
             },{withCredentials:true})
+            setLoading(false)
             setUserData(result.data)
             navigate("/")
             console.log(result)
         } catch (error) {
+            setLoading(false)
             console.log(error)
         }
     }
@@ -53,8 +57,8 @@ function Login() {
                             {show && <IoMdEyeOff className='w-[20px] h-[22px] absolute right-[12%] bottom-[10px] cursor-pointer'  onClick={()=> setShow(prev=>!prev)} />}
                         </div>
 
-                        <button className='px-[50px] py-[10px] bg-[#f1291f] text-[white] text-[18px] md:px-[100px] rounded-lg'>LogIn</button>
-                        <p className='text-[18px]'>Don't have a account? <span className='text-[19px] text-[red] cursor-pointer' onClick={()=>navigate("/signup")}>SignUp</span></p>
+                        <button className='px-[50px] py-[10px] bg-[#f1291f] text-[white] text-[18px] md:px-[100px] rounded-lg' disabled={loading}>{loading? "Loading..." : "Login"}</button>
+                        <p className='text-[18px]'>Create new account? <span className='text-[19px] text-[red] cursor-pointer' onClick={()=>navigate("/signup")}>SignUp</span></p>
                     </form>
     
     

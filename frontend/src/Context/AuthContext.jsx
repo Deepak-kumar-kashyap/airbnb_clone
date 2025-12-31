@@ -1,14 +1,17 @@
-import React, { Children, createContext } from 'react'
+import React, { Children, createContext, useState } from 'react'
 
 
 export const authDataContext = createContext()
 
-function AuthContext({children}) {
-    let serverUrl = "http://localhost:8000"
+function AuthContext({ children }) {
+  let serverUrl = "http://localhost:8000"
 
-    let value = {
-        serverUrl
-    }
+  let [loading, setLoading] = useState(false)
+
+  let value = {
+    serverUrl,
+    loading, setLoading
+  }
   return (
     <div>
       <authDataContext.Provider value={value}>

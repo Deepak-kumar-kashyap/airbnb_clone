@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import cors from 'cors'
 import userRouter from "./routes/user.route.js";
 import listingRouter from "./routes/listing.route.js";
+import bookingRouter from "./routes/booking.route.js";
 
 
 dotenv.config()
@@ -25,6 +26,7 @@ app.use(cors({
 app.use("/api/auth", authRouter)
 app.use("/api/user", userRouter)
 app.use("/api/listing", listingRouter)
+app.use("/api/booking", bookingRouter)
 
 
 
