@@ -5,6 +5,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import axios from 'axios'
 import { authDataContext } from '../Context/AuthContext';
 import { userDataContext } from '../Context/UserContext';
+import { toast } from 'react-toastify';
 
 function SignUp() {
     let [show, setShow] = useState(false);
@@ -28,10 +29,12 @@ function SignUp() {
             setLoading(false)
             setUserData(result.data)
             navigate("/")
+            toast.success("Signup Successfully")
             console.log(result)
         } catch (error) {
             setLoading(false)
             console.log(error)
+            toast.error("Something went wrong ")
         }
     }
     return (

@@ -125,3 +125,20 @@ export const deleteListing = async (req,res) => {
         return res.status(500).json({message:`DeleteListing error: ${error}`})
     }
 }
+
+export const ratingListing = async (req,res)=>{
+    try {
+        let {id} = req.params
+        let {ratings} = req.body
+        let listing = await Listing.findById(id)
+        if(!listing){
+            res.status(404).json({message:"listing not found"})
+        }
+        listing.ratings = Number(ratings)
+        await listing.save();
+        return res.status(200).json({ratings:listing.ratings})
+    } catch (error) {
+        return res.status(500).json({message:`Rating error: ${error}`})
+    }
+}
+

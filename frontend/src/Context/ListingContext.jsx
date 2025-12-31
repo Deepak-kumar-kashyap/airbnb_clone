@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { createContext } from 'react'
 import { authDataContext } from './AuthContext'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify';
 
 export const listingDataContext = createContext()
 
@@ -59,6 +60,7 @@ function ListingContext({ children }) {
             setAdding(false)
             console.log(result)
             navigate("/")
+            toast.success("AddListing Successfully")
             setTitle("")
             setDescription("")
             setFrontEndImage1(null)
@@ -76,7 +78,7 @@ function ListingContext({ children }) {
         } catch (error) {
             setAdding(false)
             console.log(error)
-            // console.log("Server error:", error.response?.data ?? error.toString())
+            toast.error(error.response.data.message)
         }
     }
 
